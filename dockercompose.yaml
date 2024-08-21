@@ -1,0 +1,39 @@
+services:
+  app:
+    image: volume:app
+    container_name: volume-app
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    ports:
+      - 8000:8000
+    env_file:
+      - docker/app/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python manage.py runserver 0.0.0.0:8000
+  
+  db:
+    image: postgres:latest
+    container_name: volume-db
+    volumes:
+      - type: volume
+        source: volume-db
+        target: /var/lib/postgresql/data
+    env_file:
+      - docker/db/.env
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER:-postgres}
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 3s
+
+volumes:
+  volume-db:
+    name: volume-db-volume
