@@ -1,6 +1,8 @@
 from django import forms
 
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+
+from .models import Post
 
 class NewNikkiForm(forms.Form):
     title = forms.CharField(label="New Nikki")
