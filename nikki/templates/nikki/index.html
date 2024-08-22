@@ -1,28 +1,17 @@
-{%  extends "nikki/layout.html" %}
-<style>
-    /*背景*/
-    body {
-        background-color:rgb(195, 242, 226)
-    }
-
-    #fixed {
-        top: 0;
-        left: 0;
-        text-align: center;
-        margin: 0;
-        width: 100%;
-        background: #0ca6d0;
-        color:white;
-        box-shadow: 0 0 15px gray;
-
-    }
-    p{
-        font-size: 30px;
-    }
-</style>
-{% block body %}
-    <h1 id="fixed">お遍路の記録</h1>
-    <p>日記を記録してください</p>
+<!-- nikki/templates/nikki/index.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日記投稿</title>
+</head>
+<body>
+    <h1>日記を投稿する</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">投稿</button>
+    </form>
 </body>
 </html>
-{% endblock %}

@@ -1,17 +1,18 @@
-from django import forms
-
-from django.shortcuts import render,redirect
-
+from django.shortcuts import render, redirect
 from .models import Post
+from .forms import PostForm
 
-class NewNikkiForm(forms.Form):
-    title = forms.CharField(label="New Nikki")
-
-# Create your views here.
 def index(request):
-    return render(request, "nikki/index.html",{
-        "form":NewNikkiForm
-    })
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()  # データベースに保存
+            return redirect('index')  # 保存後にリダイレクト
+    else:
+        form = PostForm()
+
+    posts = Post.objects.all()  # データベースから全ての投稿を取得
+    return render(request, 'nikki/index.html', {'form': form, 'posts': posts})
 
 def comp(request):
     return render(request, "nikki/comp.html",{
