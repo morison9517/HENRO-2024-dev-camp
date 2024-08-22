@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+# settings.py
+from decouple import config
+
+LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
+SECRET_KEY = config('SECRET_KEY')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +39,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'nikki',
+    'goshuin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
