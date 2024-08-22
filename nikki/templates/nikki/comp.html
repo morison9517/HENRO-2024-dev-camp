@@ -35,7 +35,7 @@
             </a>
         </div>
         <div id="header">
-            <h1>タイムライン</h1>
+            <h1>最近の投稿</h1>
         </div>
         <!-- タイムラインの表示 -->
         <ul>
@@ -45,6 +45,7 @@
                     <p>{{ entry.content }}</p>
                     <p><small>{{ entry.created_at }}</small></p>
                 </li>
+                <hr>
             {% empty %}
                 <p>投稿がありません。</p>
             {% endfor %}
