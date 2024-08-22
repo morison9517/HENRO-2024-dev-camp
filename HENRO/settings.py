@@ -15,7 +15,7 @@ from pathlib import Path
 from decouple import config
 
 LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('LINE_CHANNEL_ACCESS_TOKEN')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
