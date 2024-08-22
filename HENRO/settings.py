@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-# settings.py
+
 from decouple import config
 
 LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
