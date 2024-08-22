@@ -7,14 +7,17 @@ def index(request):
         form = PostForm(request.POST)
         if form.is_valid():
             form.save()  # データベースに保存
-            return redirect('index')  # 保存後にリダイレクト
+            return redirect('comp')  # 保存後にリダイレクト
     else:
         form = PostForm()
 
-    posts = Post.objects.all()  # データベースから全ての投稿を取得
+    posts = Post.objects.all().order_by('-created_at')  # 投稿日時で逆順に並べる
     return render(request, 'nikki/index.html', {'form': form, 'posts': posts})
 
 def comp(request):
-    return render(request, "nikki/comp.html",{
-        "comp":"comp"
-    })
+    posts = Post.objects.all().order_by('-created_at')  # 投稿日時で逆順に並べる
+
+    params = {
+       'data' : posts
+    }
+    return render(request, "nikki/comp.html", params)
