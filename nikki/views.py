@@ -3,16 +3,15 @@ from .models import Post
 from .forms import PostForm
 
 def index(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES)  # request.FILESを追加
         if form.is_valid():
-            form.save()  # データベースに保存
-            return redirect('comp')  # 保存後にリダイレクト
+            form.save()
+            return redirect('comp')
     else:
         form = PostForm()
-
-    posts = Post.objects.all().order_by('-created_at')  # 投稿日時で逆順に並べる
-    return render(request, 'nikki/index.html', {'form': form, 'posts': posts})
+    
+    return render(request, 'nikki/index.html', {'form': form})
 
 def comp(request):
     posts = Post.objects.all().order_by('-created_at')  # 投稿日時で逆順に並べる

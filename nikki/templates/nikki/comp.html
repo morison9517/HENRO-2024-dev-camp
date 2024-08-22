@@ -27,6 +27,12 @@
             max-width: 100%;
             height: auto;
         }
+        .timeline-image {
+            max-width: 500px;
+            height: auto;
+            display: block;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -54,7 +60,10 @@
                     <h2>{{ entry.title }}</h2>
                     <p>{{ entry.content }}</p>
                     {% if entry.image %}
-                        <img src="{{ entry.image.url }}" alt="{{ entry.title }}" style="max-width: 100%; height: auto;">
+                        <p>画像URL: <a href="{{ entry.image.url }}">{{ entry.image.url }}</a></p>
+                        <img src="{{ entry.image.url }}" alt="{{ entry.title }}" class="timeline-image">
+                    {% else %}
+                        <p>画像はありません。</p>
                     {% endif %}
                     <p><small>{{ entry.created_at }}</small></p>
                 </li>
