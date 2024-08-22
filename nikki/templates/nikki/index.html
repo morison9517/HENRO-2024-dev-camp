@@ -28,12 +28,14 @@
 </head>
 <body>
     <h1>日記を投稿する</h1>
-    <form method="post">
+
+    <h4>必ず訪れた寺の名前を含めてください</h4>
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">投稿</button>
     </form>
     
-    <h3>※投稿した内容は削除できません。</h3>
+    <h3>※投稿した内容は削除できません</h3>
 </body>
 </html>

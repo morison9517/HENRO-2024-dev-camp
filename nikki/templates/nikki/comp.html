@@ -18,10 +18,18 @@
         .link {
             margin-bottom: 20px;
         }
+        .post {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
-    
     <div class="container">
         <!-- 投稿完了メッセージ -->
         <div class="message">
@@ -34,15 +42,20 @@
                 投稿ページに戻る
             </a>
         </div>
+
         <div id="header">
             <h1>最近の投稿</h1>
         </div>
+
         <!-- タイムラインの表示 -->
         <ul>
             {% for entry in data %}
                 <li>
                     <h2>{{ entry.title }}</h2>
                     <p>{{ entry.content }}</p>
+                    {% if entry.image %}
+                        <img src="{{ entry.image.url }}" alt="{{ entry.title }}" style="max-width: 100%; height: auto;">
+                    {% endif %}
                     <p><small>{{ entry.created_at }}</small></p>
                 </li>
                 <hr>
