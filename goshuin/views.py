@@ -3,9 +3,10 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, LocationMessage, TextSendMessage
+from linebot.models import MessageEvent, LocationMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, PostbackAction
 import math
 from .models import Temple
+from django.shortcuts import render
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(settings.LINE_CHANNEL_SECRET)
@@ -49,23 +50,26 @@ def handle_location_message(event):
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_message))
 
-
-@handler.add(MessageEvent)
-def handle_message(event):
-    if event.message.text == "位置情報を送信してください":
+@handler.add(MessageEvent, message=TextSendMessage)
+def handle_text_message(event):
+    if event.message.text.lower() == '位置情報を送信する':
         buttons_template = ButtonsTemplate(
-            title='位置情報の共有',
-            text='位置情報を送信するには、以下のボタンをタップしてください。',
+            title='位置情報送信',
+            text='位置情報を送信するには、下のボタンをタップしてください。',
             actions=[
-                MessageAction(label='位置情報を送信', text='位置情報を送信してください')
+                PostbackAction(
+                    label='位置情報を送信',
+                    data='send_location'
+                )
             ]
         )
         template_message = TemplateSendMessage(
-            alt_text='位置情報の共有',
+            alt_text='位置情報を送信するボタン',
             template=buttons_template
         )
-        line_bot_api.reply_message(
-            event.reply_token,
-            template_message
-        )
+        line_bot_api.reply_message(event.reply_token, template_message)
+
+def callback(request):
+    return HttpResponse('Callback view is working!')
+
 

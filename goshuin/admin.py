@@ -1,3 +1,4 @@
 from django.contrib import admin
+from goshuin.models import Temple
 
-# Register your models here.
+admin.site.register(Temple)
