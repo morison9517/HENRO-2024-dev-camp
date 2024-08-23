@@ -7,6 +7,8 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, LocationMessage, TextSendMessage
 from .models import Temple
 import logging
+import csv
+import os
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(settings.LINE_CHANNEL_SECRET)
@@ -75,3 +77,30 @@ def handle_location_message(event):
 def callback(request):
     return HttpResponse('Callback view is working!')
 
+#--------------------------------------------------------------------------
+#番号に合わせて説明を返す
+
+
+# CSVファイルからデータを読み込む関数
+def get_response_from_csv(number):
+    csv_path = os.path.join(os.path.dirname(__file__), 'explanation.csv')
+    with open(csv_path, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['number'] == str(number):
+                return row['explanation']
+    return "該当するデータがありません。"
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_text_message(event):
+    user_input = event.message.text
+
+    if user_input.isdigit():
+        explanation = get_response_from_csv(user_input)
+    else:
+        explanation = "数字を入力してください。"
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=explanation)
+    )
