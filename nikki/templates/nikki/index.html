@@ -1,4 +1,3 @@
-<!-- nikki/templates/nikki/index.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,36 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日記投稿</title>
     <style>
-        /*背景*/
+        /* 基本設定 */
         body {
-            background-color: rgb(195, 242, 226);
+            background-color: #f0f8f5;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
         }
 
-        #fixed {
-            top: 0;
-            left: 0;
-            text-align: center;
-            margin: 0;
-            width: 100%;
-            background: #0ca6d0;
-            color: white;
-            box-shadow: 0 0 15px gray;
+        /* コンテナ設定 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        h1 {
+            font-size: 28px;
+            color: #0ca6d0;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            font-size: 16px;
+            text-align: center;
+            color: #666;
+        }
+
+        h3 {
+            font-size: 14px;
+            text-align: center;
+            color: #e74c3c;
+            margin-top: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #0ca6d0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0989ad;
+        }
+
         p {
-            font-size: 30px;
+            font-size: 14px;
+            text-align: center;
+            color: #999;
+        }
+
+        textarea {
+            resize: none;
+            width: 95%;
+            height: 150px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            h4 {
+                font-size: 14px;
+            }
+
+            h3 {
+                font-size: 12px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            textarea {
+                height: 120px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>日記を投稿する</h1>
-
-    <h4>必ず訪れた寺の名前を含めてください</h4>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">投稿</button>
-    </form>
-    
-    <h3>※投稿した内容は削除できません</h3>
+    <div class="container">
+        <h1>日記を投稿する</h1>
+        <h4>必ず訪れた寺の名前を含めてください</h4>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">投稿</button>
+        </form>
+        <h3>※投稿した内容は削除できません</h3>
+    </div>
 </body>
 </html>

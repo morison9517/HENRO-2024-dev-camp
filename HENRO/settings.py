@@ -35,11 +35,9 @@ SECRET_KEY = 'django-insecure-e4r8(6*1+3v)92kf5dt@2i&tjet5-!q4m#$@1pg7(zym+14w18
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'amoeba-precious-curiously.ngrok-free.app'
-]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'amoeba-precious-curiously.ngrok-free.app']
+
+CSRF_TRUSTED_ORIGINS = ['https://amoeba-precious-curiously.ngrok-free.app']
 
 
 
