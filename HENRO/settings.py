@@ -9,13 +9,12 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from decouple import config
 
 from pathlib import Path
 
-from decouple import config
-
 LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('LINE_CHANNEL_ACCESS_TOKEN')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

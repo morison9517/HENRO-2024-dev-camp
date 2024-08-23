@@ -1,36 +1,17 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextSendMessage, LocationMessage, TemplateSendMessage, ButtonsTemplate, MessageAction
+from linebot.models import MessageEvent, LocationMessage, TextSendMessage
+import math
 from .models import Temple
 
-line_bot_api = LineBotApi('YOUR_LINE_CHANNEL_ACCESS_TOKEN')
-handler = WebhookHandler('YOUR_LINE_CHANNEL_SECRET')
-
-def haversine(lat1, lon1, lat2, lon2):
-    from math import radians, cos, sin, asin, sqrt
-    R = 6371.0  # Earth's radius in km
-    dlat = radians(lat2 - lat1)
-    dlon = radians(lon2 - lon1)
-    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
-    c = 2 * asin(sqrt(a))
-    return R * c
-
-def get_nearest_temple(user_lat, user_lon):
-    nearest_temple = None
-    min_distance = float('inf')
-    
-    for temple in Temple.objects.all():
-        distance = haversine(user_lat, user_lon, temple.latitude, temple.longitude)
-        if distance < min_distance:
-            min_distance = distance
-            nearest_temple = temple
-    
-    return nearest_temple, min_distance
+line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(settings.LINE_CHANNEL_SECRET)
 
 @csrf_exempt
-def callback(request):
+def line_callback(request):
     signature = request.META['HTTP_X_LINE_SIGNATURE']
     body = request.body.decode('utf-8')
 
@@ -44,19 +25,30 @@ def callback(request):
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
     user_lat = event.message.latitude
-    user_lon = event.message.longitude
-    nearest_temple, distance = get_nearest_temple(user_lat, user_lon)
+    user_lng = event.message.longitude
 
-    if distance <= 0.2:  # 200m以内を近づいたと定義
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=f"{nearest_temple.name}に近づきました！")
-        )
+    def calculate_distance(lat1, lng1, lat2, lng2):
+        R = 6371  # 地球の半径 (km)
+        dlat = math.radians(lat2 - lat1)
+        dlng = math.radians(lng2 - lng1)
+        a = math.sin(dlat/2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlng/2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        return R * c
+
+    nearby_temple = None
+    for temple in Temple.objects.all():
+        distance = calculate_distance(user_lat, user_lng, temple.latitude, temple.longitude)
+        if distance < 0.5:  # 0.5km以内なら通知
+            nearby_temple = temple
+            break
+
+    if nearby_temple:
+        reply_message = f"あなたは{nearby_temple.name}に近づいています！"
     else:
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="あなたは目的地の近くにはいません。")
-        )
+        reply_message = "近くに寺院はありません。"
+
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_message))
+
 
 @handler.add(MessageEvent)
 def handle_message(event):
