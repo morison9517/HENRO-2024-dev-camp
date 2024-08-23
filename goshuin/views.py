@@ -6,9 +6,12 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, LocationMessage, TextSendMessage
 from .models import Temple
+import logging
 
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(settings.LINE_CHANNEL_SECRET)
+
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def line_callback(request):
@@ -40,27 +43,33 @@ def handle_location_message(event):
     user_lat = event.message.latitude
     user_lon = event.message.longitude
 
-    closest_temple = None
-    closest_distance = float('inf')
+    try:
+        temples = Temple.objects.all()
+        closest_temple = None
+        closest_distance = float('inf')
 
     # データベースから寺院の情報を取得
-    temples = Temple.objects.all()
-    for temple in temples:
-        distance = calculate_distance(user_lat, user_lon, temple.latitude, temple.longitude)
-        if distance < closest_distance:
-            closest_distance = distance
-            closest_temple = temple
+    
+        for temple in temples:
+            distance = calculate_distance(user_lat, user_lon, temple.latitude, temple.longitude)
+            if distance < closest_distance:
+                closest_distance = distance
+                closest_temple = temple
 
-    if closest_temple and closest_distance < 0.3:  # 300m以内に近い寺院がある場合
-        reply_message = f"{closest_temple.name}に近づいています！"
-    else:
-        reply_message = "近くに寺院はありません"
+        if closest_temple and closest_distance < 0.3:  # 300m以内に近い寺院がある場合
+            reply_message = f"{closest_temple.name}に近づいています！"
+        else:
+            reply_message = "近くに寺院はありません"
 
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_message)
-    )
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply_message)
+        )
 
+        logger.info("Reply sent: %s", reply_message)
+
+    except Exception as e:
+        logger.error("Error processing location message: %s", str(e))
 
 
 def callback(request):
