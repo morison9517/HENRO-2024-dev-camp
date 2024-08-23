@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import Post
 from .forms import PostForm
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def index(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)  # request.FILESを追加
@@ -13,6 +15,7 @@ def index(request):
     
     return render(request, 'nikki/index.html', {'form': form})
 
+@csrf_protect
 def comp(request):
     posts = Post.objects.all().order_by('-created_at')  # 投稿日時で逆順に並べる
 
