@@ -15,6 +15,8 @@ def line_callback(request):
     signature = request.META['HTTP_X_LINE_SIGNATURE']
     body = request.body.decode('utf-8')
 
+    logger.info("Received body: %s", body)
+
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -33,6 +35,8 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
+    logger.info("Location message received: %s", event.message)
+
     user_lat = event.message.latitude
     user_lon = event.message.longitude
 

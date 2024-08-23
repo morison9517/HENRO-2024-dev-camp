@@ -13,6 +13,8 @@ from pathlib import Path
 
 from decouple import config
 
+import os
+
 LINE_CHANNEL_ACCESS_TOKEN = config('LINE_CHANNEL_ACCESS_TOKEN')
 LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
 
@@ -140,4 +142,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' 
+
+
+
 
