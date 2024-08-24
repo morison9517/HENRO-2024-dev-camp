@@ -158,6 +158,7 @@
                         <h2>{{ entry.title }}</h2>
                         <p>{{ entry.content }}</p>
                         {% if entry.image %}
+                            <p>Image URL: {{ entry.image.url }}</p>
                             <img src="{{ entry.image.url }}" alt="{{ entry.title }}" class="timeline-image">
                         {% else %}
                             <p>画像はありません。</p>
