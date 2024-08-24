@@ -58,7 +58,7 @@ def handle_location_message(event):
                 closest_distance = distance
                 closest_temple = temple
 
-        if closest_temple and closest_distance < 1.5:  # 1.5km以内に近い寺院がある場合
+        if closest_temple and closest_distance < 1:  # 1.5km以内に近い寺院がある場合
             reply_message = f"{closest_temple.name}に近づいています！"
         else:
             reply_message = "近くに寺院はありません"
