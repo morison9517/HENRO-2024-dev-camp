@@ -1,22 +1,19 @@
-# ベースイメージとして公式のPythonイメージを使用
-FROM python:3.10-slim
+# Python の公式イメージをベースにする
+FROM python:3.9-slim
 
-# 作業ディレクトリを設定
+# 作業ディレクトリを作成
 WORKDIR /app
 
 # 必要なライブラリをインストール
-COPY requirements.txt /app/
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# アプリケーションのソースコードをコピー
-COPY . /app/
+# プロジェクトのコードをコンテナにコピー
+COPY . .
 
-# ポートを開放
-EXPOSE 8000
+# 環境変数の設定
+ENV PYTHONUNBUFFERED=1
 
-# コマンドを実行
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "HENRO.wsgi:application"]
-
-RUN pip install --upgrade pip
-
+# Django のマイグレーションを適用し、アプリケーションを起動するコマンドを設定
+CMD ["sh", "-c", "python manage.py migrate && gunicorn HENRO.wsgi:application --bind 0.0.0.0:8000"]
 
