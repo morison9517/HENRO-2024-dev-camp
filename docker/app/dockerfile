@@ -1,0 +1,20 @@
+# ベースイメージの指定
+FROM python
+
+# 作業ディレクトリを設定
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECORE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_DEBUG=False
+
+# 必要なファイルをコピー
+COPY . .
+
+RUN apt-get update && apt-get install -y postgresql-client
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+RUN pip install gunicorn
+RUN mkdir -p /var/run/gunicorn
+
+# サーバーの起動
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

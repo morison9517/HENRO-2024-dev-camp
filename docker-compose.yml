@@ -1,21 +1,57 @@
 services:
   web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    image: henro:web
+    container_name: henro-web
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
     volumes:
-      - .:/app
+      - type: volume
+        source: socket
+        target: /var/run/gunicorn
     ports:
-      - "8000:8000"
+      - 8000:80
     depends_on:
-      - db
+      - app
+
+  app:
+    image: henro:app
+    container_name: henro-app
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - type: volume
+        source: socket
+        target: /var/run/gunicorn
+    env_file:
+      - docker/app/.env
+    command: gunicorn HENRO.wsgi:application --bind unix:/var/run/gunicorn.sock
+
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+    image: postgres
+    container_name: henro-db
+    volumes:
+      - type: volume
+        source: volume-db
+        target: /var/lib/postgresql/data
+    env_file:
+      - docker/db/.env
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER:-postgres}
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 3s
 
 volumes:
-  postgres_data:
-
+  volume-db:
+    name: volume-db-volume
+    driver: local
+  socket:
+    name: django-socket
+    driver: local

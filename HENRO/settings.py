@@ -15,6 +15,10 @@ from decouple import config
 
 import os
 
+import dj_database_url
+
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+
 LINE_CHANNEL_ACCESS_TOKEN = config('LINE_CHANNEL_ACCESS_TOKEN')
 LINE_CHANNEL_SECRET = config('LINE_CHANNEL_SECRET')
 
@@ -90,10 +94,10 @@ WSGI_APPLICATION = 'HENRO.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
-        'USER': 'myuser',
-        'PASSWORD': 'mypassword',
-        'HOST': 'db',  # ここを 'localhost' から 'db' に変更
+        'NAME': 'shugosha',
+        'USER': 'team7',
+        'PASSWORD': 'kagawagardian',
+        'HOST': 'database-1.cdseao4oqjyl.ap-northeast-1.rds.amazonaws.com',  # ここを 'localhost' から 'db' に変更
         'PORT': '5432',
     }
 }
