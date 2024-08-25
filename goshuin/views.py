@@ -15,6 +15,9 @@ handler = WebhookHandler(settings.LINE_CHANNEL_SECRET)
 
 logger = logging.getLogger(__name__)
 
+def my_view(request):
+    return HttpResponse('Hello, world', status=200)
+
 @csrf_exempt
 def line_callback(request):
     signature = request.META['HTTP_X_LINE_SIGNATURE']
