@@ -1,27 +1,20 @@
-version: '3.8'
-
 services:
   web:
     build: .
-    command: gunicorn --bind 0.0.0.0:8000 HENRO.wsgi:application
-    ports:
-      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-    environment:
-      DJANGO_SETTINGS_MODULE: HENRO.settings
+    ports:
+      - "8000:8000"
     depends_on:
       - db
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: your_db_name
-      POSTGRES_USER: your_db_user
-      POSTGRES_PASSWORD: your_db_password
-      POSTGRES_HOST_AUTH_METHOD: trust
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
 
 volumes:
   postgres_data:

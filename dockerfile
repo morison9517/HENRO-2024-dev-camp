@@ -16,3 +16,7 @@ EXPOSE 8000
 
 # コマンドを実行
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "HENRO.wsgi:application"]
+
+RUN pip install --upgrade pip
+
+
